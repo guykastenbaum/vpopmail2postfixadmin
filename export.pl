@@ -40,11 +40,13 @@ YAML::DumpFile($file, %data);
 sub getDomains{
 	my %domains;
 	foreach(qx/vdominfo -n/){
+                next if /^$/;
 		/^(\S+)/;
 		my $domain = $1;
 		if (/\(alias of (.+)\)/){
-			my $alias = $1;
-			push(@{$domains{$domain}{'aliases'}}, $1);
+                        my $alias = $domain;
+                        $domain=$1;
+                        push(@{$domains{$domain}{'aliases'}}, $alias);
 		}
 		$domains{$domain}{'name'}="$domain";
 		$domains{$domain}{'dir'}=$vpopmail->domaininfo(domain=>$domain, field=>'map');
